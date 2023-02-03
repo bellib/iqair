@@ -1,0 +1,13 @@
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+
+
+const routes = require('./router');
+app.use( routes );
+ 
+
+
+module.exports = server;
+

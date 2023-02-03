@@ -1,0 +1,65 @@
+version: '3'
+networks:
+  iq_network:
+
+services:
+
+  mongo_db:
+    image: mongo
+    container_name: mongo_container
+    restart: always
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_DATABASE: "${MONGO_DB_NAME}"
+      MONGO_INITDB_ROOT_USERNAME: "${MONGO_INITDB_ROOT_USERNAME}"
+      MONGO_INITDB_ROOT_PASSWORD: "${MONGO_INITDB_ROOT_PASSWORD}"
+    volumes:
+      - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./data:/data/db
+    networks:
+      - iq_network
+
+  iqair_nginx:
+    image: nginx:stable-alpine
+    container_name: iqair_nginx_container  
+    ports:
+      - "3000:80"
+    volumes: 
+      - ./nginx/iqair.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - iq_network
+    depends_on:
+      - iqair_service
+
+  iqair_service:
+    build: 
+      context: ../app
+      dockerfile: ../core/docker/iqairDockerFile
+    container_name: app_container 
+    ports:
+      - "3030:8080"
+    restart: always
+    volumes:
+      - ../app:/usr/local/apps/app/dev
+      - exclude:/usr/local/apps/app/dev/node_modules/
+    environment:
+      NODE_ENV: dev
+      MONGO_DB_NAME: "${MONGO_DB_NAME}"
+      MONGO_DB_PASS: "${MONGO_DB_PASS}"
+      MONGO_DB_USR: "${MONGO_DB_USR}"
+      PORT: "${APP_PORT}"
+      API_KEY: "${API_KEY}"
+      MONGO_DB_HOST: "${MONGO_DB_HOST}"
+    networks:
+      - iq_network
+    depends_on:
+      - mongo_db
+  
+volumes: 
+  exclude:
+
+ 
+
+
+

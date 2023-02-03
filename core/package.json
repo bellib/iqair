@@ -1,0 +1,13 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "up:dev:live": "docker-compose --env-file ./config/.dev.env up",
+    "up:dev": "docker-compose --env-file ./config/.dev.env up -d"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

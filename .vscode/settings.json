@@ -1,0 +1,7 @@
+{
+    "files.exclude": {
+        "app": true,
+        "core": true,
+        "iqair": true,
+    }
+}
